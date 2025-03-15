@@ -11,12 +11,13 @@
 
 //==============================================================================
 PocketsynthAudioProcessorEditor::PocketsynthAudioProcessorEditor (PocketsynthAudioProcessor& p)
-	: AudioProcessorEditor(&p), audioProcessor(p)
+	: AudioProcessorEditor(&p), audioProcessor(p),
+	midiKeyboard(audioProcessor.getMidiKeyboardState(), juce::MidiKeyboardComponent::horizontalKeyboard)
 {
 	//========== SET UP EDITOR ==========
 	// Setup editor and fix aspect ratio
     setResizable(true, true);
-	setResizeLimits(600, 400, 750, 500);
+	setResizeLimits(600, 400, 750, 500); 
 	getConstrainer()->setFixedAspectRatio(1.5f);
 	setSize(600, 400);
 	setLookAndFeel(&customLookAndFeel);
@@ -61,6 +62,9 @@ PocketsynthAudioProcessorEditor::PocketsynthAudioProcessorEditor (PocketsynthAud
 	gain_label.attachToComponent(&gain_slider, false);
 	gain_label.setJustificationType(juce::Justification::centred);
 	addAndMakeVisible(gain_label);
+
+	// Midi keyboard
+	addAndMakeVisible(midiKeyboard); // TODO: LIMIT KEYBOARD TO CERTAIN RANGE, ADD SMALL OCTAVE SHIFT BUTTONS
 
 	resized();
 }
@@ -174,7 +178,10 @@ void PocketsynthAudioProcessorEditor::resized()
 
 		// Layout control components
 		juce::GridItem(gain_slider)							.withArea(2, 15, 4, 17),
-		juce::GridItem(gain_label)							.withArea(4, 15, 4, 17)
+		juce::GridItem(gain_label)							.withArea(4, 15, 4, 17),
+
+		// Midi keyboard
+		juce::GridItem(midiKeyboard)						.withArea(15, 1, 17, 17),
     };
 
     grid.performLayout(getLocalBounds().reduced(spacing.margin, spacing.margin));

@@ -56,6 +56,13 @@ CustomLookAndFeel::CustomLookAndFeel()
 	setColour(juce::ComboBox::outlineColourId, getColourFromID("border"));
 	setColour(juce::ComboBox::buttonColourId, getColourFromID("foreground"));
 	setColour(juce::ComboBox::textColourId, getColourFromID("text"));
+
+	// Midi keyboard colours
+	setColour(juce::MidiKeyboardComponent::blackNoteColourId, getColourFromID("background"));
+	setColour(juce::MidiKeyboardComponent::whiteNoteColourId, getColourFromID("background"));
+	setColour(juce::MidiKeyboardComponent::keySeparatorLineColourId, getColourFromID("foreground"));
+	setColour(juce::MidiKeyboardComponent::mouseOverKeyOverlayColourId, getColourFromID("highlight").withAlpha(0.5f));
+	setColour(juce::MidiKeyboardComponent::keyDownOverlayColourId, getColourFromID("highlight"));
 }
 
 CustomLookAndFeel::~CustomLookAndFeel()

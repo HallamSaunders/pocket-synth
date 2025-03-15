@@ -14,6 +14,7 @@
 #include "CustomTextEditor.h"
 #include "Spacing.h"
 #include "LicenseActivationWindow.h"
+#include "CustomMidiKeyboard.h"
 
 //==============================================================================
 /**
@@ -64,4 +65,7 @@ private:
 	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> gain_sliderAttachment;
 	juce::Slider gain_slider;
 	juce::Label gain_label;
+
+	// Midi keyboard component
+	CustomMidiKeyboard midiKeyboard;
 };

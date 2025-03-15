@@ -10,6 +10,8 @@
               file="Source/CustomLookAndFeel.cpp"/>
         <FILE id="lEyBIs" name="CustomLookAndFeel.h" compile="0" resource="0"
               file="Source/CustomLookAndFeel.h"/>
+        <FILE id="pJSorF" name="CustomMidiKeyboard.h" compile="0" resource="0"
+              file="Source/CustomMidiKeyboard.h"/>
         <FILE id="rF9s2G" name="CustomTextEditor.h" compile="0" resource="0"
               file="Source/CustomTextEditor.h"/>
         <FILE id="xR9Z0S" name="Spacing.cpp" compile="1" resource="0" file="Source/Spacing.cpp"/>

@@ -77,6 +77,9 @@ public:
     // Initial values
     static constexpr float initialGain = 0.6f;
 
+	// Midi keyboard state
+	juce::MidiKeyboardState& getMidiKeyboardState() { return midiKeyboardState; }
+
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PocketsynthAudioProcessor)
@@ -90,4 +93,7 @@ private:
     juce::UndoManager undoManager;
 	juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier& property) override;
+
+    // Midi keyboard state
+    juce::MidiKeyboardState midiKeyboardState;
 };
