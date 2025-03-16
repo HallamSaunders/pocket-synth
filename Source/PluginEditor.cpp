@@ -12,7 +12,7 @@
 //==============================================================================
 PocketsynthAudioProcessorEditor::PocketsynthAudioProcessorEditor (PocketsynthAudioProcessor& p)
 	: AudioProcessorEditor(&p), audioProcessor(p),
-	midiKeyboard(audioProcessor.getMidiKeyboardState(), juce::MidiKeyboardComponent::horizontalKeyboard)
+	midiKeyboard(p.getMidiKeyboardState(), juce::MidiKeyboardComponent::horizontalKeyboard)
 {
 	//========== SET UP EDITOR ==========
 	// Setup editor and fix aspect ratio

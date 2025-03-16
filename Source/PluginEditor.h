@@ -20,7 +20,7 @@
 /**
 */
 class PocketsynthAudioProcessorEditor  : public juce::AudioProcessorEditor,
-	                                                      public juce::ChangeListener
+	                                     public juce::ChangeListener
 {
 public:
     PocketsynthAudioProcessorEditor (PocketsynthAudioProcessor&);

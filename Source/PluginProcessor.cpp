@@ -24,11 +24,14 @@ PocketsynthAudioProcessor::PocketsynthAudioProcessor()
     treeState(*this, &undoManager, "PARAMETERS", createParameterLayout())
 #endif
 {
+    // Set up preset directory
 	presetDirectory = licenseManager.getActivationDirectory().getChildFile("Presets");
 	presetDirectory.createDirectory();
 
+    // Add listeners
 	licenseManager.addListener(this);
 
+	// Set up ValueTreeState
     treeState.state = juce::ValueTree(licenseManager.getPluginID() + "State");
 }
 
@@ -282,6 +285,16 @@ void PocketsynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+
+    // Update midi keyboard state
+	midiKeyboardState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
+
+    for (const auto metadata : midiMessages)
+    {
+        const auto message = metadata.getMessage();
+        if (message.isNoteOn()) juce::Logger::outputDebugString("PROCESSOR: note on.");
+        if (message.isNoteOff()) juce::Logger::outputDebugString("PROCESSOR: note off.");
+    }
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...

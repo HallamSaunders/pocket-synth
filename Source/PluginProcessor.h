@@ -15,9 +15,9 @@
 /**
 */
 class PocketsynthAudioProcessor  : public juce::AudioProcessor,
-                                                    public juce::ValueTree::Listener,
-	                                                public LicenseManager::Listener,
-	                                                public juce::ChangeBroadcaster
+                                   public juce::ValueTree::Listener,
+	                               public LicenseManager::Listener,
+	                               public juce::ChangeBroadcaster
 {
 public:
     //==============================================================================
@@ -77,7 +77,7 @@ public:
     // Initial values
     static constexpr float initialGain = 0.6f;
 
-	// Midi keyboard state
+	// Midi management
 	juce::MidiKeyboardState& getMidiKeyboardState() { return midiKeyboardState; }
 
 private:
@@ -94,6 +94,6 @@ private:
 	juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
     void valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier& property) override;
 
-    // Midi keyboard state
+    // Midi management
     juce::MidiKeyboardState midiKeyboardState;
 };
