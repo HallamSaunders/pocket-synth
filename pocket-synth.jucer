@@ -6,10 +6,6 @@
   <MAINGROUP id="e9OuBz" name="pocket-synth">
     <GROUP id="{E1001ED0-77CA-5863-C654-B41B7E694DDA}" name="Source">
       <GROUP id="{E3583C2C-9BC0-4BB3-1A5F-93E35DEF2A65}" name="Synthesiser">
-        <GROUP id="{15FAB420-7131-0D69-F937-05DB1BC2D30E}" name="Sine">
-          <FILE id="YYY50E" name="SineWaveVoice.h" compile="0" resource="0" file="Source/SineWaveVoice.h"/>
-          <FILE id="QFuLxR" name="SineWaveSound.h" compile="0" resource="0" file="Source/SineWaveSound.h"/>
-        </GROUP>
         <FILE id="EJAhDF" name="OscillatorSound.h" compile="0" resource="0"
               file="Source/OscillatorSound.h"/>
         <FILE id="k65edM" name="OscillatorVoice.h" compile="0" resource="0"
