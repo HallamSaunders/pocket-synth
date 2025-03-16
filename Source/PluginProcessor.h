@@ -10,6 +10,8 @@
 
 #include <JuceHeader.h>
 #include "LicenseManager.h"
+#include "SineWaveSound.h"
+#include "SineWaveVoice.h"
 
 //==============================================================================
 /**
@@ -96,4 +98,7 @@ private:
 
     // Midi management
     juce::MidiKeyboardState midiKeyboardState;
+
+	// Synthesiser components
+    juce::Synthesiser synth;
 };

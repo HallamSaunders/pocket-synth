@@ -33,6 +33,13 @@ PocketsynthAudioProcessor::PocketsynthAudioProcessor()
 
 	// Set up ValueTreeState
     treeState.state = juce::ValueTree(licenseManager.getPluginID() + "State");
+
+    // Set up the synth
+    for (auto i = 0; i < 4; ++i)
+    {
+        synth.addVoice(new SineWaveVoice());
+    }
+    synth.addSound(new SineWaveSound());
 }
 
 PocketsynthAudioProcessor::~PocketsynthAudioProcessor()
@@ -237,6 +244,7 @@ void PocketsynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+	synth.setCurrentPlaybackSampleRate(sampleRate);
 }
 
 void PocketsynthAudioProcessor::releaseResources()
@@ -286,15 +294,8 @@ void PocketsynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // Update midi keyboard state
 	midiKeyboardState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
-
-    for (const auto metadata : midiMessages)
-    {
-        const auto message = metadata.getMessage();
-        if (message.isNoteOn()) juce::Logger::outputDebugString("PROCESSOR: note on.");
-        if (message.isNoteOff()) juce::Logger::outputDebugString("PROCESSOR: note off.");
-    }
+	synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...

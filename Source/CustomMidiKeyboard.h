@@ -33,4 +33,27 @@ public:
 		g.setColour(findColour(juce::MidiKeyboardComponent::keySeparatorLineColourId));
 		g.drawRect(area);
 	}
+
+	/*void drawUpDownButton(juce::Graphics& g, int w, int h, bool isUpButton, bool isMouseOver, bool isButtonDown) override
+	{
+        g.fillAll(juce::Colours::transparentBlack); // Hide default arrows
+
+        // Optional: Draw custom arrows
+        g.setColour(juce::Colours::white);
+        juce::Path arrow;
+        float arrowSize = h * 0.3f;
+        float centerX = w * 0.5f;
+        float centerY = h * 0.5f;
+
+        if (isUpButton) // Draw up arrow
+        {
+            arrow.addTriangle(centerX, centerY - arrowSize, centerX - arrowSize, centerY + arrowSize, centerX + arrowSize, centerY + arrowSize);
+        }
+        else // Draw down arrow
+        {
+            arrow.addTriangle(centerX, centerY + arrowSize, centerX - arrowSize, centerY - arrowSize, centerX + arrowSize, centerY - arrowSize);
+        }
+
+        g.fillPath(arrow);
+	}*/
 };

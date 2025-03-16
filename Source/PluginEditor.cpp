@@ -64,7 +64,7 @@ PocketsynthAudioProcessorEditor::PocketsynthAudioProcessorEditor (PocketsynthAud
 	addAndMakeVisible(gain_label);
 
 	// Midi keyboard
-	addAndMakeVisible(midiKeyboard); // TODO: LIMIT KEYBOARD TO CERTAIN RANGE, ADD SMALL OCTAVE SHIFT BUTTONS
+	addAndMakeVisible(midiKeyboard);
 
 	resized();
 }
