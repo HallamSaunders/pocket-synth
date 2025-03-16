@@ -207,9 +207,9 @@ void CustomLookAndFeel::drawPopupMenuBackground(juce::Graphics& g, int width, in
 	g.drawRect(0, 0, width, height);
 }
 
-juce::PopupMenu::Options CustomLookAndFeel::getOptionsForComboBoxPopupMenu(juce::ComboBox& box, juce::Label& label)
+/*juce::PopupMenu::Options CustomLookAndFeel::getOptionsForComboBoxPopupMenu(juce::ComboBox& box, juce::Label& label)
 {
 	return juce::PopupMenu::Options()
 		.withTargetComponent(&box)
 		.withMinimumNumColumns(box.getNumItems() / 10);
-}
+}*/

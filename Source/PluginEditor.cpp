@@ -63,6 +63,31 @@ PocketsynthAudioProcessorEditor::PocketsynthAudioProcessorEditor (PocketsynthAud
 	gain_label.setJustificationType(juce::Justification::centred);
 	addAndMakeVisible(gain_label);
 
+	// Oscillator 1 components
+	osc1_label.setText("Oscillator 1", juce::dontSendNotification);
+	osc1_label.setJustificationType(juce::Justification::centred);
+	addAndMakeVisible(osc1_label);
+	osc1waveform_comboBoxAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(
+		audioProcessor.getTreeState(), "osc1waveform", osc1waveform_comboBox);
+	osc1waveform_comboBox.addItem("Sine", 1);
+	osc1waveform_comboBox.addItem("Square", 2);
+	osc1waveform_comboBox.addItem("Saw", 3);
+	osc1waveform_comboBox.addItem("Triangle", 4);
+	osc1waveform_comboBox.addItem("Noise", 5);
+	osc1waveform_comboBox.setSelectedId(1, juce::dontSendNotification);
+	osc1waveform_comboBox.onChange = [this] 
+		{
+			// Parameter value in APVTS expects normalised value between 0 and 1
+			if (auto* param = dynamic_cast<juce::AudioParameterChoice*>(
+				audioProcessor.getTreeState().getParameter("osc1waveform")))
+			{
+				param->setValueNotifyingHost(
+					static_cast<float>(osc1waveform_comboBox.getSelectedId() - 1) / (param->choices.size() - 1)
+				);
+			}
+		};
+	addAndMakeVisible(osc1waveform_comboBox);
+
 	// Midi keyboard
 	addAndMakeVisible(midiKeyboard);
 
@@ -179,6 +204,10 @@ void PocketsynthAudioProcessorEditor::resized()
 		// Layout control components
 		juce::GridItem(gain_slider)							.withArea(2, 15, 4, 17),
 		juce::GridItem(gain_label)							.withArea(4, 15, 4, 17),
+
+		// Oscillator 1 components
+		juce::GridItem(osc1_label)							.withArea(2, 1, 6, 1),
+		juce::GridItem(osc1waveform_comboBox)				.withArea(2, 2, 2, 5),
 
 		// Midi keyboard
 		juce::GridItem(midiKeyboard)						.withArea(15, 1, 17, 17),

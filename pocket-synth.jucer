@@ -10,6 +10,10 @@
           <FILE id="YYY50E" name="SineWaveVoice.h" compile="0" resource="0" file="Source/SineWaveVoice.h"/>
           <FILE id="QFuLxR" name="SineWaveSound.h" compile="0" resource="0" file="Source/SineWaveSound.h"/>
         </GROUP>
+        <FILE id="EJAhDF" name="OscillatorSound.h" compile="0" resource="0"
+              file="Source/OscillatorSound.h"/>
+        <FILE id="k65edM" name="OscillatorVoice.h" compile="0" resource="0"
+              file="Source/OscillatorVoice.h"/>
       </GROUP>
       <GROUP id="{DB824595-A2C8-8C66-8465-78E90C7D758E}" name="LookAndFeel">
         <FILE id="Z0g8ey" name="CustomLookAndFeel.cpp" compile="1" resource="0"

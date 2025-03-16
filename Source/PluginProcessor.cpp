@@ -30,21 +30,28 @@ PocketsynthAudioProcessor::PocketsynthAudioProcessor()
 
     // Add listeners
 	licenseManager.addListener(this);
+	treeState.state.addListener(this);
 
 	// Set up ValueTreeState
     treeState.state = juce::ValueTree(licenseManager.getPluginID() + "State");
 
+	// Add listeners to ValueTreeState parameters
+	treeState.addParameterListener("gain", this);
+	treeState.addParameterListener("osc1waveform", this);
+
     // Set up the synth
-    for (auto i = 0; i < 4; ++i)
-    {
-        synth.addVoice(new SineWaveVoice());
-    }
-    synth.addSound(new SineWaveSound());
+    synth.addVoice(new OscillatorVoice());
+    synth.addSound(new OscillatorSound());
 }
 
 PocketsynthAudioProcessor::~PocketsynthAudioProcessor()
 {
+	// Remove listeners
 	licenseManager.removeListener(this);
+
+	// Remove listeners from ValueTreeState parameters
+	treeState.removeParameterListener("gain", this);
+	treeState.removeParameterListener("osc1waveform", this);
 }
 
 // Set up the ValueTreeState with default values
@@ -53,14 +60,32 @@ juce::AudioProcessorValueTreeState::ParameterLayout PocketsynthAudioProcessor::c
 	juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
 	layout.add(std::make_unique<juce::AudioParameterFloat>("gain", "Gain", juce::NormalisableRange<float>(0.0f, 1.0f), initialGain));
+	layout.add(std::make_unique<juce::AudioParameterChoice>("osc1waveform", "Osc 1 Waveform", juce::StringArray{ "Sine", "Square", "Saw", "Triangle", "Noise"}, 0));
 
 	return layout;
 }
 
 // Listen for changes on the ValueTreeState
-void PocketsynthAudioProcessor::valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier& property)
+void PocketsynthAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
-    juce::Logger::outputDebugString("PROCESSOR: ValueTree property changed: " + property.toString() + ", new value: " + tree.getProperty("gain"));
+	juce::Logger::outputDebugString("Changed parameter: " + parameterID + " new value: " + (juce::String)newValue);
+
+	if (parameterID == "gain")
+	{
+		// Set the gain of the synth
+	}
+
+	if (parameterID == "osc1waveform")
+    {
+		// Set the waveform of oscillator 1
+		for (int i = 0; i < synth.getNumVoices(); i++)
+		{
+			if (auto* voice = dynamic_cast<OscillatorVoice*>(synth.getVoice(i)))
+			{
+				voice->setWaveform(newValue);
+			}
+		}
+    }
 }
 
 void PocketsynthAudioProcessor::savePreset()

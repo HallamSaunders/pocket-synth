@@ -66,6 +66,11 @@ private:
 	juce::Slider gain_slider;
 	juce::Label gain_label;
 
+	// Oscillator 1 components
+	juce::Label osc1_label;
+	juce::ComboBox osc1waveform_comboBox;
+	std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> osc1waveform_comboBoxAttachment;
+
 	// Midi keyboard component
 	CustomMidiKeyboard midiKeyboard;
 };

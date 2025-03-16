@@ -1,8 +1,8 @@
 /*
   ==============================================================================
 
-    SineWaveVoice.h
-    Created: 16 Mar 2025 12:33:28pm
+    OscillatorVoice.h
+    Created: 16 Mar 2025 7:00:49pm
     Author:  Hallam Saunders
 
   ==============================================================================
@@ -11,14 +11,14 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "SineWaveSound.h"
+#include "OscillatorSound.h"
 
-class SineWaveVoice : public juce::SynthesiserVoice
+class OscillatorVoice : public juce::SynthesiserVoice
 {
 public:
 	bool canPlaySound(juce::SynthesiserSound* sound) override
 	{
-		return dynamic_cast<SineWaveSound*> (sound) != nullptr;
+		return dynamic_cast<OscillatorSound*> (sound) != nullptr;
 	}
 
 	void startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound*, int /*currentPitchWheelPosition*/) override
@@ -35,6 +35,50 @@ public:
 
 	void renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
 	{
+		if (angleDelta == 0.0)
+			return;
+
+		while (--numSamples >= 0)
+		{
+			float currentSample = 0.0f;
+
+			if (waveformType == "Sine")
+				currentSample = std::sin(currentAngle);
+			else if (waveformType == "Square")
+				currentSample = (std::sin(currentAngle) >= 0.0f) ? 1.0f : -1.0f;
+			else if (waveformType == "Saw")
+				currentSample = (2.0f / juce::MathConstants<float>::pi) * currentAngle - 1.0f;
+			else if (waveformType == "Triangle")
+				currentSample = 2.0f * std::abs(2.0f * (currentAngle / juce::MathConstants<float>::twoPi) - 1.0f) - 1.0f;
+			else if (waveformType == "Noise")
+				currentSample = 2.0f * juce::Random::getSystemRandom().nextFloat() - 1.0f;
+
+			currentSample *= level;
+
+			if (tailOff > 0.0)
+			{
+				currentSample *= tailOff;
+				tailOff *= 0.99;
+
+				if (tailOff <= 0.005)
+				{
+					clearCurrentNote();
+					angleDelta = 0.0;
+					break;
+				}
+			}
+				
+			for (int i = outputBuffer.getNumChannels(); --i >= 0;)
+				outputBuffer.addSample(i, startSample, currentSample);
+
+			currentAngle += angleDelta;
+
+			if (currentAngle >= juce::MathConstants<double>::twoPi) // Wrap round to 2pi
+				currentAngle -= juce::MathConstants<double>::twoPi;
+
+			++startSample;
+		}
+
 		if (angleDelta != 0.0)
 		{
 			if (tailOff > 0.0)
@@ -92,6 +136,14 @@ public:
 	void pitchWheelMoved(int /*newValue*/) override {}
 	void controllerMoved(int /*controllerNumber*/, int /*newValue*/) override {}
 
+	void setWaveform(float newTypeIndex)
+	{
+		waveformType = waveformTypes[newTypeIndex];
+		juce::Logger::outputDebugString("Waveform set to " + waveformType);
+	}
+
 private:
-    double currentAngle = 0.0, angleDelta = 0.0, level = 0.0, tailOff = 0.0;
+	juce::Array<juce::String> waveformTypes = { "Sine", "Square", "Saw", "Triangle", "Noise" };
+	juce::String waveformType = "Sine";
+	double currentAngle = 0.0, angleDelta = 0.0, level = 0.0, tailOff = 0.0;
 };

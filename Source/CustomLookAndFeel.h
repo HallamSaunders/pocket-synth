@@ -38,7 +38,7 @@ public:
 	// Overriding drawing properties for combo boxes
 	void drawComboBox(juce::Graphics& g, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, juce::ComboBox& box) override;
 	void drawPopupMenuBackground(juce::Graphics& g, int width, int height) override;
-	juce::PopupMenu::Options getOptionsForComboBoxPopupMenu(juce::ComboBox& box, juce::Label& label) override;
+	//juce::PopupMenu::Options getOptionsForComboBoxPopupMenu(juce::ComboBox& box, juce::Label& label) override;
 
 
     static constexpr float fontSizeScale = 0.8f;
