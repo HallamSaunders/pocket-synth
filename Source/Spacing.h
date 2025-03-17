@@ -17,6 +17,7 @@ class Spacing
 public:
     static juce::Grid getGridLayout();
     static constexpr float margin = 5.0f;
+	static constexpr float sliderTextboxDim = 20.0f;
 private:
 	static constexpr float headerHeight = 20.0f;
 };

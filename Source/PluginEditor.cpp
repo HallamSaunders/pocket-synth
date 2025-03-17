@@ -63,6 +63,18 @@ PocketsynthAudioProcessorEditor::PocketsynthAudioProcessorEditor (PocketsynthAud
 	gain_label.setJustificationType(juce::Justification::centred);
 	addAndMakeVisible(gain_label);
 
+	// Voices components
+	voices_sliderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
+		audioProcessor.getTreeState(), "voices", voices_slider);
+	voices_slider.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+	voices_slider.setTextBoxStyle(juce::Slider::TextBoxLeft, false, spacing.sliderTextboxDim, spacing.sliderTextboxDim);
+	voices_slider.setRange(1, 16, 1);
+	addAndMakeVisible(voices_slider);
+	voices_label.setText("Voices", juce::dontSendNotification);
+	voices_label.attachToComponent(&voices_slider, false);
+	voices_label.setJustificationType(juce::Justification::centred);
+	addAndMakeVisible(voices_label);
+
 	// Oscillator 1 components
 	osc1_label.setText("Oscillator 1", juce::dontSendNotification);
 	osc1_label.setJustificationType(juce::Justification::centred);
@@ -201,13 +213,15 @@ void PocketsynthAudioProcessorEditor::resized()
 		juce::GridItem(presetSelection_comboBox)			.withArea(1, 11, 1, 15),
 		juce::GridItem(savePreset_button)					.withArea(1, 15, 1, 17),
 
-		// Layout control components
-		juce::GridItem(gain_slider)							.withArea(2, 15, 4, 17),
-		juce::GridItem(gain_label)							.withArea(4, 15, 4, 17),
-
 		// Oscillator 1 components
 		juce::GridItem(osc1_label)							.withArea(2, 1, 6, 1),
 		juce::GridItem(osc1waveform_comboBox)				.withArea(2, 2, 2, 5),
+
+		// Layout control components
+		juce::GridItem(voices_slider)						.withArea(12, 13, 14, 15),
+		juce::GridItem(voices_label)						.withArea(14, 13, 14, 15),
+		juce::GridItem(gain_slider)							.withArea(12, 15, 14, 17),
+		juce::GridItem(gain_label)							.withArea(14, 15, 14, 17),
 
 		// Midi keyboard
 		juce::GridItem(midiKeyboard)						.withArea(15, 1, 17, 17),

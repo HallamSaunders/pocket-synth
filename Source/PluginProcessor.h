@@ -102,6 +102,7 @@ private:
     juce::MidiKeyboardState midiKeyboardState;
 
 	// Synthesiser components
+	void setupSynth();
     juce::Synthesiser synth;
 
 };
