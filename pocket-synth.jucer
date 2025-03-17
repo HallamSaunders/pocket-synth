@@ -6,10 +6,22 @@
   <MAINGROUP id="e9OuBz" name="pocket-synth">
     <GROUP id="{E1001ED0-77CA-5863-C654-B41B7E694DDA}" name="Source">
       <GROUP id="{E4304BE2-55E9-CBF4-730E-2069324FE921}" name="VisualComponents">
+        <FILE id="R8TD9p" name="GlobalControlsComponent.cpp" compile="1" resource="0"
+              file="Source/GlobalControlsComponent.cpp"/>
+        <FILE id="JKFAga" name="GlobalControlsComponent.h" compile="0" resource="0"
+              file="Source/GlobalControlsComponent.h"/>
         <FILE id="AOK75j" name="OscillatorComponent.cpp" compile="1" resource="0"
               file="Source/OscillatorComponent.cpp"/>
         <FILE id="d0a6Py" name="OscillatorComponent.h" compile="0" resource="0"
               file="Source/OscillatorComponent.h"/>
+        <FILE id="dK4Yo3" name="PresetBarComponent.cpp" compile="1" resource="0"
+              file="Source/PresetBarComponent.cpp"/>
+        <FILE id="smWPNK" name="PresetBarComponent.h" compile="0" resource="0"
+              file="Source/PresetBarComponent.h"/>
+        <FILE id="vMCYcF" name="TitleActivationBarComponent.cpp" compile="1"
+              resource="0" file="Source/TitleActivationBarComponent.cpp"/>
+        <FILE id="qNOjMD" name="TitleActivationBarComponent.h" compile="0"
+              resource="0" file="Source/TitleActivationBarComponent.h"/>
       </GROUP>
       <GROUP id="{E3583C2C-9BC0-4BB3-1A5F-93E35DEF2A65}" name="Synthesiser">
         <FILE id="DJrh9E" name="Oscillator.h" compile="0" resource="0" file="Source/Oscillator.h"/>

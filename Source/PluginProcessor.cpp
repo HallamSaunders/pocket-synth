@@ -36,9 +36,9 @@ PocketsynthAudioProcessor::PocketsynthAudioProcessor()
     treeState.state = juce::ValueTree(licenseManager.getPluginID() + "State");
 
 	// Add listeners to ValueTreeState parameters
-	treeState.addParameterListener("gain", this);
-	treeState.addParameterListener("voices", this);
-	treeState.addParameterListener("osc1waveform", this);
+	//treeState.addParameterListener("gain", this);
+	//treeState.addParameterListener("voices", this);
+	//treeState.addParameterListener("osc1_waveform", this);
 
     setupSynth();
 }
@@ -49,9 +49,9 @@ PocketsynthAudioProcessor::~PocketsynthAudioProcessor()
 	licenseManager.removeListener(this);
 
 	// Remove listeners from ValueTreeState parameters
-	treeState.removeParameterListener("gain", this);
-	treeState.removeParameterListener("voices", this);
-	treeState.removeParameterListener("osc1waveform", this);
+	//treeState.removeParameterListener("gain", this);
+	//treeState.removeParameterListener("voices", this);
+	//treeState.removeParameterListener("osc1_waveform", this);
 }
 
 void PocketsynthAudioProcessor::setupSynth()
@@ -72,9 +72,43 @@ juce::AudioProcessorValueTreeState::ParameterLayout PocketsynthAudioProcessor::c
 {
 	juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
+	// Global parameters
 	layout.add(std::make_unique<juce::AudioParameterFloat>("gain", "Gain", juce::NormalisableRange<float>(0.0f, 1.0f), initialGain));
 	layout.add(std::make_unique<juce::AudioParameterInt>("voices", "Voices", 1, 16, 4));
-	layout.add(std::make_unique<juce::AudioParameterChoice>("osc1waveform", "Osc 1 Waveform", juce::StringArray{ "Sine", "Square", "Saw", "Triangle", "Noise"}, 0));
+
+    // Oscillator 1 parameters
+	layout.add(std::make_unique<juce::AudioParameterBool>("osc1_active", "Osc 1 Active", true));
+	layout.add(std::make_unique<juce::AudioParameterChoice>("osc1_waveform", "Osc 1 Waveform", juce::StringArray{ "Sine", "Square", "Saw", "Triangle", "Noise"}, 0));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc1_octave", "Osc 1 Octave", -3, 3, 0));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc1_semitone", "Osc 1 Semitone", -11, 11, 0));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc1_fine", "Osc 1 Fine", -100, 100, 0));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_attack", "Osc 1 Attack", juce::NormalisableRange<float>(0.0f, 1.0f), 0.1f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_decay", "Osc 1 Decay", juce::NormalisableRange<float>(0.0f, 1.0f), 0.1f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_sustain", "Osc 1 Sustain", juce::NormalisableRange<float>(0.0f, 1.0f), 0.1f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_release", "Osc 1 Release", juce::NormalisableRange<float>(0.0f, 1.0f), 0.1f));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc1_voices", "Osc 1 Voices", 1, 16, 1));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc1_voicesDetune", "Osc 1 Voices Detune", -100, 100, 0));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_voicesMix", "Osc 1 Voices Mix", juce::NormalisableRange<float>(0.0f, 1.0f), 0.5f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_voicesPan", "Osc 1 Voices Pan", juce::NormalisableRange<float>(-1.0f, 1.0f), 0.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_level", "Osc 1 Level", juce::NormalisableRange<float>(0.0f, 1.0f), 0.6f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_pan", "Osc 1 Pan", juce::NormalisableRange<float>(-1.0f, 1.0f), 0.0f));
+
+    // Oscillator 2 parameters
+    layout.add(std::make_unique<juce::AudioParameterBool>("osc2_active", "Osc 2 Active", true));
+	layout.add(std::make_unique<juce::AudioParameterChoice>("osc2_waveform", "Osc 2 Waveform", juce::StringArray{ "Sine", "Square", "Saw", "Triangle", "Noise" }, 0));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc2_octave", "Osc 2 Octave", -3, 3, 0));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc2_semitone", "Osc 2 Semitone", -11, 11, 0));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc2_fine", "Osc 2 Fine", -100, 100, 0));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_attack", "Osc 2 Attack", juce::NormalisableRange<float>(0.0f, 1.0f), 0.1f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_decay", "Osc 2 Decay", juce::NormalisableRange<float>(0.0f, 1.0f), 0.1f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_sustain", "Osc 2 Sustain", juce::NormalisableRange<float>(0.0f, 1.0f), 0.1f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_release", "Osc 2 Release", juce::NormalisableRange<float>(0.0f, 1.0f), 0.1f));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc2_voices", "Osc 2 Voices", 1, 16, 1));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc2_voicesDetune", "Osc 2 Voices Detune", -100, 100, 0));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_voicesMix", "Osc 2 Voices Mix", juce::NormalisableRange<float>(0.0f, 1.0f), 0.5f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_voicesPan", "Osc 2 Voices Pan", juce::NormalisableRange<float>(-1.0f, 1.0f), 0.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_level", "Osc 2 Level", juce::NormalisableRange<float>(0.0f, 1.0f), 0.6f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_pan", "Osc 2 Pan", juce::NormalisableRange<float>(-1.0f, 1.0f), 0.0f));
 
 	return layout;
 }
@@ -101,7 +135,7 @@ void PocketsynthAudioProcessor::parameterChanged(const juce::String& parameterID
 		{
 			if (auto* voice = dynamic_cast<OscillatorVoice*>(synth.getVoice(i)))
 			{
-				voice->setWaveform(newValue);
+				//voice->setWaveform(newValue);
 			}
 		}
     }
@@ -339,7 +373,7 @@ void PocketsynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         buffer.clear (i, 0, buffer.getNumSamples());
 
 	midiKeyboardState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
-	synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+	//synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...

@@ -11,15 +11,21 @@
 
 //==============================================================================
 PocketsynthAudioProcessorEditor::PocketsynthAudioProcessorEditor (PocketsynthAudioProcessor& p)
-	: AudioProcessorEditor(&p), audioProcessor(p),
-	midiKeyboard(p.getMidiKeyboardState(), juce::MidiKeyboardComponent::horizontalKeyboard)
+	: AudioProcessorEditor(&p),
+	audioProcessor(p),
+	midiKeyboard(p.getMidiKeyboardState(), juce::MidiKeyboardComponent::horizontalKeyboard),
+	titleActivationBar_component(p.getLicenseManager()),
+	presetBar_component(p),
+	osc1_component(p.getTreeState(), "Oscillator 1", "osc1"),
+	osc2_component(p.getTreeState(), "Oscillator 2", "osc2"),
+	globalControls_component(p.getTreeState())
 {
 	//========== SET UP EDITOR ==========
 	// Setup editor and fix aspect ratio
     setResizable(true, true);
-	setResizeLimits(600, 400, 750, 500); 
+	setResizeLimits(900, 600, 1200, 800); 
 	getConstrainer()->setFixedAspectRatio(1.5f);
-	setSize(600, 400);
+	setSize(1000, 750);
 	setLookAndFeel(&customLookAndFeel);
 
 	audioProcessor.addChangeListener(this);
@@ -51,6 +57,25 @@ PocketsynthAudioProcessorEditor::PocketsynthAudioProcessorEditor (PocketsynthAud
 	redo_button.onClick = [this] { audioProcessor.redo(); };
 	addAndMakeVisible(redo_button);
 
+
+
+
+	// Title bar and activation
+	addAndMakeVisible(titleActivationBar_component);
+
+	// Preset management
+	addAndMakeVisible(presetBar_component);
+
+	// Oscillators
+	addAndMakeVisible(osc1_component);
+	addAndMakeVisible(osc2_component);
+
+	// Global controls
+	addAndMakeVisible(globalControls_component);
+
+
+
+
 	// Gain control
 	gain_sliderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(
 		audioProcessor.getTreeState(), "gain", gain_slider);
@@ -79,15 +104,15 @@ PocketsynthAudioProcessorEditor::PocketsynthAudioProcessorEditor (PocketsynthAud
 	osc1_label.setText("Oscillator 1", juce::dontSendNotification);
 	osc1_label.setJustificationType(juce::Justification::centred);
 	addAndMakeVisible(osc1_label);
-	osc1waveform_comboBoxAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(
-		audioProcessor.getTreeState(), "osc1waveform", osc1waveform_comboBox);
+	/*osc1waveform_comboBoxAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(
+		audioProcessor.getTreeState(), "osc1waveform", osc1waveform_comboBox);*/
 	osc1waveform_comboBox.addItem("Sine", 1);
 	osc1waveform_comboBox.addItem("Square", 2);
 	osc1waveform_comboBox.addItem("Saw", 3);
 	osc1waveform_comboBox.addItem("Triangle", 4);
 	osc1waveform_comboBox.addItem("Noise", 5);
 	osc1waveform_comboBox.setSelectedId(1, juce::dontSendNotification);
-	osc1waveform_comboBox.onChange = [this] 
+	/*osc1waveform_comboBox.onChange = [this]
 		{
 			// Parameter value in APVTS expects normalised value between 0 and 1
 			if (auto* param = dynamic_cast<juce::AudioParameterChoice*>(
@@ -97,7 +122,7 @@ PocketsynthAudioProcessorEditor::PocketsynthAudioProcessorEditor (PocketsynthAud
 					static_cast<float>(osc1waveform_comboBox.getSelectedId() - 1) / (param->choices.size() - 1)
 				);
 			}
-		};
+		};*/
 	addAndMakeVisible(osc1waveform_comboBox);
 
 	// Midi keyboard
@@ -203,12 +228,12 @@ void PocketsynthAudioProcessorEditor::paint(juce::Graphics& g)
 
 void PocketsynthAudioProcessorEditor::resized()
 {
-    juce::Grid grid = spacing.getGridLayout();
+	/*juce::Grid grid = spacing.getGridLayout();
 
 	grid.items = { // Don't forget that JUCE grid items are 1-indexed!  
 		// Licensing components
 		juce::GridItem(launchLicenseActivationWindow_button).withArea(1, 1, 1, 4),
-		
+
 		// Preset navigation components
 		juce::GridItem(presetSelection_comboBox)			.withArea(1, 11, 1, 15),
 		juce::GridItem(savePreset_button)					.withArea(1, 15, 1, 17),
@@ -227,5 +252,29 @@ void PocketsynthAudioProcessorEditor::resized()
 		juce::GridItem(midiKeyboard)						.withArea(15, 1, 17, 17),
     };
 
-    grid.performLayout(getLocalBounds().reduced(spacing.margin, spacing.margin));
+    grid.performLayout(getLocalBounds().reduced(spacing.margin, spacing.margin));*/
+
+	juce::Grid grid = spacing.getMainGridLayout();
+
+	grid.items = {
+		// Title and licensing header
+		juce::GridItem(titleActivationBar_component).withArea(1, 1, 1, 1),
+
+		// Preset management header
+		juce::GridItem(presetBar_component)			.withArea(2, 1, 2, 1),
+
+		// Oscillator 1
+		juce::GridItem(osc1_component)				.withArea(3, 1, 3, 1),
+
+		// Oscillator 2
+		juce::GridItem(osc2_component)				.withArea(4, 1, 4, 1),
+
+		// Global controls
+		juce::GridItem(globalControls_component)	.withArea(5, 1, 5, 1),
+
+		// Midi keyboard
+		juce::GridItem(midiKeyboard)				.withArea(6, 1, 6, 1)
+	};
+
+	grid.performLayout(getLocalBounds().reduced(spacing.margin, spacing.margin));
 }

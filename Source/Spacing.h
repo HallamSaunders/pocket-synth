@@ -16,6 +16,11 @@ class Spacing
 {
 public:
     static juce::Grid getGridLayout();
+    static juce::Grid getMainGridLayout();
+	static juce::Grid getTitleBarGridLayout();
+    static juce::Grid getPresetBarGridLayout();
+	static juce::Grid getOscillatorGridLayout();
+	static juce::Grid getGlobalControlsGridLayout();
     static constexpr float margin = 5.0f;
 	static constexpr float sliderTextboxDim = 20.0f;
 private:
