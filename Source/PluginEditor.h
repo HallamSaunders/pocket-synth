@@ -63,13 +63,18 @@ private:
 	//========== PARAMETER COMPONENTS ==========
 	// Gain parameter components
 	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> gain_sliderAttachment;
-	juce::Slider gain_slider;
 	juce::Label gain_label;
+	juce::Slider gain_slider;
+
+	// Voices components
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> voices_sliderAttachment;
+	juce::Label voices_label;
+	juce::Slider voices_slider;
 
 	// Oscillator 1 components
+	std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> osc1waveform_comboBoxAttachment;
 	juce::Label osc1_label;
 	juce::ComboBox osc1waveform_comboBox;
-	std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> osc1waveform_comboBoxAttachment;
 
 	// Midi keyboard component
 	CustomMidiKeyboard midiKeyboard;

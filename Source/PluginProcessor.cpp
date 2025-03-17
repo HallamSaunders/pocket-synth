@@ -37,11 +37,10 @@ PocketsynthAudioProcessor::PocketsynthAudioProcessor()
 
 	// Add listeners to ValueTreeState parameters
 	treeState.addParameterListener("gain", this);
+	treeState.addParameterListener("voices", this);
 	treeState.addParameterListener("osc1waveform", this);
 
-    // Set up the synth
-    synth.addVoice(new OscillatorVoice());
-    synth.addSound(new OscillatorSound());
+    setupSynth();
 }
 
 PocketsynthAudioProcessor::~PocketsynthAudioProcessor()
@@ -51,7 +50,21 @@ PocketsynthAudioProcessor::~PocketsynthAudioProcessor()
 
 	// Remove listeners from ValueTreeState parameters
 	treeState.removeParameterListener("gain", this);
+	treeState.removeParameterListener("voices", this);
 	treeState.removeParameterListener("osc1waveform", this);
+}
+
+void PocketsynthAudioProcessor::setupSynth()
+{
+	int voices = static_cast<int>(*treeState.getRawParameterValue("voices"));
+
+	synth.clearVoices();
+
+	for (int i = 0; i < voices; i++)
+		synth.addVoice(new OscillatorVoice());
+
+    if (synth.getNumSounds() == 0)
+    	synth.addSound(new OscillatorSound());
 }
 
 // Set up the ValueTreeState with default values
@@ -60,6 +73,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout PocketsynthAudioProcessor::c
 	juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
 	layout.add(std::make_unique<juce::AudioParameterFloat>("gain", "Gain", juce::NormalisableRange<float>(0.0f, 1.0f), initialGain));
+	layout.add(std::make_unique<juce::AudioParameterInt>("voices", "Voices", 1, 16, 4));
 	layout.add(std::make_unique<juce::AudioParameterChoice>("osc1waveform", "Osc 1 Waveform", juce::StringArray{ "Sine", "Square", "Saw", "Triangle", "Noise"}, 0));
 
 	return layout;
@@ -74,6 +88,11 @@ void PocketsynthAudioProcessor::parameterChanged(const juce::String& parameterID
 	{
 		// Set the gain of the synth
 	}
+
+    if (parameterID == "voices")
+    {
+		setupSynth();
+    }
 
 	if (parameterID == "osc1waveform")
     {
@@ -328,11 +347,16 @@ void PocketsynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // the samples and the outer loop is handling the channels.
     // Alternatively, you can process the samples with the channels
     // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+    float gainModifier = static_cast<float>(*treeState.getRawParameterValue("gain"));
+
+    for (int channel = 0; channel < totalNumOutputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);
 
-        // ..do something to the data...
+		for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+		{
+			channelData[sample] *= gainModifier;
+		}
     }
 }
 
