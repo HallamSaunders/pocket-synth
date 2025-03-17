@@ -36,9 +36,9 @@ public:
 			osc.initialise([](float x) { return std::sin(x); }, 128);
     }
 
-	void setFrequency(float frequency)
+	void setFrequency(float frequency, double sampleRate)
 	{
-		osc.setFrequency(frequency);
+		osc.setFrequency(frequency, sampleRate);
 	}
 
 	void prepare(const juce::dsp::ProcessSpec& spec)
@@ -50,6 +50,22 @@ public:
 	{
 		return osc.processSample(0.0f);
 	}
+
+	void reset()
+	{
+		osc.reset();
+	}
+
+	void setActive(bool shouldBeActive)
+	{
+		active = shouldBeActive;
+	}
+
+	bool isActive() const
+	{
+		return active;
+	}
 private:
 	juce::dsp::Oscillator<float> osc;
+	bool active;
 };
