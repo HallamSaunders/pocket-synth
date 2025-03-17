@@ -56,6 +56,13 @@ CustomLookAndFeel::CustomLookAndFeel()
 	setColour(juce::ComboBox::outlineColourId, getColourFromID("border"));
 	setColour(juce::ComboBox::buttonColourId, getColourFromID("foreground"));
 	setColour(juce::ComboBox::textColourId, getColourFromID("text"));
+
+	// Midi keyboard colours
+	setColour(juce::MidiKeyboardComponent::blackNoteColourId, getColourFromID("background"));
+	setColour(juce::MidiKeyboardComponent::whiteNoteColourId, getColourFromID("background"));
+	setColour(juce::MidiKeyboardComponent::keySeparatorLineColourId, getColourFromID("foreground"));
+	setColour(juce::MidiKeyboardComponent::mouseOverKeyOverlayColourId, getColourFromID("highlight").withAlpha(0.5f));
+	setColour(juce::MidiKeyboardComponent::keyDownOverlayColourId, getColourFromID("highlight"));
 }
 
 CustomLookAndFeel::~CustomLookAndFeel()
@@ -200,9 +207,9 @@ void CustomLookAndFeel::drawPopupMenuBackground(juce::Graphics& g, int width, in
 	g.drawRect(0, 0, width, height);
 }
 
-juce::PopupMenu::Options CustomLookAndFeel::getOptionsForComboBoxPopupMenu(juce::ComboBox& box, juce::Label& label)
+/*juce::PopupMenu::Options CustomLookAndFeel::getOptionsForComboBoxPopupMenu(juce::ComboBox& box, juce::Label& label)
 {
 	return juce::PopupMenu::Options()
 		.withTargetComponent(&box)
 		.withMinimumNumColumns(box.getNumItems() / 10);
-}
+}*/

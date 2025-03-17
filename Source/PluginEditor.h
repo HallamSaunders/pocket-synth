@@ -14,12 +14,13 @@
 #include "CustomTextEditor.h"
 #include "Spacing.h"
 #include "LicenseActivationWindow.h"
+#include "CustomMidiKeyboard.h"
 
 //==============================================================================
 /**
 */
 class PocketsynthAudioProcessorEditor  : public juce::AudioProcessorEditor,
-	                                                      public juce::ChangeListener
+	                                     public juce::ChangeListener
 {
 public:
     PocketsynthAudioProcessorEditor (PocketsynthAudioProcessor&);
@@ -64,4 +65,12 @@ private:
 	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> gain_sliderAttachment;
 	juce::Slider gain_slider;
 	juce::Label gain_label;
+
+	// Oscillator 1 components
+	juce::Label osc1_label;
+	juce::ComboBox osc1waveform_comboBox;
+	std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> osc1waveform_comboBoxAttachment;
+
+	// Midi keyboard component
+	CustomMidiKeyboard midiKeyboard;
 };

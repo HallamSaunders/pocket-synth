@@ -10,14 +10,17 @@
 
 #include <JuceHeader.h>
 #include "LicenseManager.h"
+#include "OscillatorSound.h"
+#include "OscillatorVoice.h"
 
 //==============================================================================
 /**
 */
 class PocketsynthAudioProcessor  : public juce::AudioProcessor,
-                                                    public juce::ValueTree::Listener,
-	                                                public LicenseManager::Listener,
-	                                                public juce::ChangeBroadcaster
+                                   public juce::ValueTree::Listener,
+	                               public LicenseManager::Listener,
+	                               public juce::ChangeBroadcaster,
+	                               public juce::AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
@@ -77,6 +80,9 @@ public:
     // Initial values
     static constexpr float initialGain = 0.6f;
 
+	// Midi management
+	juce::MidiKeyboardState& getMidiKeyboardState() { return midiKeyboardState; }
+
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PocketsynthAudioProcessor)
@@ -89,5 +95,13 @@ private:
     juce::AudioProcessorValueTreeState treeState;
     juce::UndoManager undoManager;
 	juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
-    void valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier& property) override;
+    //void valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier& property) override;
+	void parameterChanged(const juce::String& parameterID, float newValue) override;
+
+    // Midi management
+    juce::MidiKeyboardState midiKeyboardState;
+
+	// Synthesiser components
+    juce::Synthesiser synth;
+
 };

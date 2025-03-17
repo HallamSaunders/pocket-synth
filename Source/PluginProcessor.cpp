@@ -24,17 +24,34 @@ PocketsynthAudioProcessor::PocketsynthAudioProcessor()
     treeState(*this, &undoManager, "PARAMETERS", createParameterLayout())
 #endif
 {
+    // Set up preset directory
 	presetDirectory = licenseManager.getActivationDirectory().getChildFile("Presets");
 	presetDirectory.createDirectory();
 
+    // Add listeners
 	licenseManager.addListener(this);
+	treeState.state.addListener(this);
 
+	// Set up ValueTreeState
     treeState.state = juce::ValueTree(licenseManager.getPluginID() + "State");
+
+	// Add listeners to ValueTreeState parameters
+	treeState.addParameterListener("gain", this);
+	treeState.addParameterListener("osc1waveform", this);
+
+    // Set up the synth
+    synth.addVoice(new OscillatorVoice());
+    synth.addSound(new OscillatorSound());
 }
 
 PocketsynthAudioProcessor::~PocketsynthAudioProcessor()
 {
+	// Remove listeners
 	licenseManager.removeListener(this);
+
+	// Remove listeners from ValueTreeState parameters
+	treeState.removeParameterListener("gain", this);
+	treeState.removeParameterListener("osc1waveform", this);
 }
 
 // Set up the ValueTreeState with default values
@@ -43,14 +60,32 @@ juce::AudioProcessorValueTreeState::ParameterLayout PocketsynthAudioProcessor::c
 	juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
 	layout.add(std::make_unique<juce::AudioParameterFloat>("gain", "Gain", juce::NormalisableRange<float>(0.0f, 1.0f), initialGain));
+	layout.add(std::make_unique<juce::AudioParameterChoice>("osc1waveform", "Osc 1 Waveform", juce::StringArray{ "Sine", "Square", "Saw", "Triangle", "Noise"}, 0));
 
 	return layout;
 }
 
 // Listen for changes on the ValueTreeState
-void PocketsynthAudioProcessor::valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier& property)
+void PocketsynthAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
-    juce::Logger::outputDebugString("PROCESSOR: ValueTree property changed: " + property.toString() + ", new value: " + tree.getProperty("gain"));
+	juce::Logger::outputDebugString("Changed parameter: " + parameterID + " new value: " + (juce::String)newValue);
+
+	if (parameterID == "gain")
+	{
+		// Set the gain of the synth
+	}
+
+	if (parameterID == "osc1waveform")
+    {
+		// Set the waveform of oscillator 1
+		for (int i = 0; i < synth.getNumVoices(); i++)
+		{
+			if (auto* voice = dynamic_cast<OscillatorVoice*>(synth.getVoice(i)))
+			{
+				voice->setWaveform(newValue);
+			}
+		}
+    }
 }
 
 void PocketsynthAudioProcessor::savePreset()
@@ -234,6 +269,7 @@ void PocketsynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+	synth.setCurrentPlaybackSampleRate(sampleRate);
 }
 
 void PocketsynthAudioProcessor::releaseResources()
@@ -282,6 +318,9 @@ void PocketsynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+
+	midiKeyboardState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
+	synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...
