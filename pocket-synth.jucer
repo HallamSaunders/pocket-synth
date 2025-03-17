@@ -6,10 +6,12 @@
   <MAINGROUP id="e9OuBz" name="pocket-synth">
     <GROUP id="{E1001ED0-77CA-5863-C654-B41B7E694DDA}" name="Source">
       <GROUP id="{E3583C2C-9BC0-4BB3-1A5F-93E35DEF2A65}" name="Synthesiser">
+        <FILE id="DJrh9E" name="Oscillator.h" compile="0" resource="0" file="Source/Oscillator.h"/>
         <FILE id="EJAhDF" name="OscillatorSound.h" compile="0" resource="0"
               file="Source/OscillatorSound.h"/>
         <FILE id="k65edM" name="OscillatorVoice.h" compile="0" resource="0"
               file="Source/OscillatorVoice.h"/>
+        <FILE id="FSfr7K" name="SynthVoice.h" compile="0" resource="0" file="Source/SynthVoice.h"/>
       </GROUP>
       <GROUP id="{DB824595-A2C8-8C66-8465-78E90C7D758E}" name="LookAndFeel">
         <FILE id="Z0g8ey" name="CustomLookAndFeel.cpp" compile="1" resource="0"

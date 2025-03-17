@@ -12,10 +12,17 @@
 
 #include <JuceHeader.h>
 #include "OscillatorSound.h"
+#include "Oscillator.h"
 
 class OscillatorVoice : public juce::SynthesiserVoice
 {
 public:
+	OscillatorVoice()
+	{
+		for (int i = 0; i < oscillators.size(); ++i)
+			oscillators[i].setWaveform("Sine");
+	}
+
 	bool canPlaySound(juce::SynthesiserSound* sound) override
 	{
 		return dynamic_cast<OscillatorSound*> (sound) != nullptr;
@@ -143,7 +150,10 @@ public:
 	}
 
 private:
-	juce::Array<juce::String> waveformTypes = { "Sine", "Square", "Saw", "Triangle", "Noise" };
-	juce::String waveformType = "Sine";
-	double currentAngle = 0.0, angleDelta = 0.0, level = 0.0, tailOff = 0.0;
+	std::array<Oscillator, 2> oscillators;
+	double level = 0.0, tailOff = 0.0;
+
+	//juce::Array<juce::String> waveformTypes = { "Sine", "Square", "Saw", "Triangle", "Noise" };
+	//juce::String waveformType = "Sine";
+	//double currentAngle = 0.0, angleDelta = 0.0, level = 0.0, tailOff = 0.0;
 };
