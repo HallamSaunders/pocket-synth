@@ -72,9 +72,58 @@ private:
 	juce::Slider voices_slider;
 
 	// Oscillator 1 components
-	std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> osc1waveform_comboBoxAttachment;
 	juce::Label osc1_label;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::ComboBoxAttachment> osc1waveform_comboBoxAttachment;
 	juce::ComboBox osc1waveform_comboBox;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> osc1level_sliderAttachment;
+	juce::Label osc1level_label;
+	juce::Slider osc1level_slider;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> osc1octave_sliderAttachment;
+	juce::Label osc1octave_label;
+	juce::Slider osc1octave_slider;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> osc1semitone_sliderAttachment;
+	juce::Label osc1semitone_label;
+	juce::Slider osc1semitone_slider;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> osc1fine_sliderAttachment;
+	juce::Label osc1fine_label;
+	juce::Slider osc1fine_slider;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> osc1attack_sliderAttachment;
+	juce::Label osc1attack_label;
+	juce::Slider osc1attack_slider;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> osc1decay_sliderAttachment;
+	juce::Label osc1decay_label;
+	juce::Slider osc1decay_slider;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> osc1sustain_sliderAttachment;
+	juce::Label osc1sustain_label;
+	juce::Slider osc1sustain_slider;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> osc1release_sliderAttachment;
+	juce::Label osc1release_label;
+	juce::Slider osc1release_slider;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> osc1voices_sliderAttachment;
+	juce::Label osc1voices_label;
+	juce::Slider osc1voices_slider;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> osc1voicesDetune_sliderAttachment;
+	juce::Label osc1voicesDetune_label;
+	juce::Slider osc1voicesDetune_slider;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> osc1voicesMix_sliderAttachment;
+	juce::Label osc1voicesMix_label;
+	juce::Slider osc1voicesMix_slider;
+
+	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> osc1voicesPan_sliderAttachment;
+	juce::Label osc1voicesPan_label;
+	juce::Slider osc1voicesPan_slider;
 
 	// Midi keyboard component
 	CustomMidiKeyboard midiKeyboard;
