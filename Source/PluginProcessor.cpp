@@ -21,7 +21,7 @@ PocketsynthAudioProcessor::PocketsynthAudioProcessor()
                      #endif
                        ),
     undoManager(),
-    treeState(*this, &undoManager, "PARAMETERS", createParameterLayout())
+    treeState(*this, &undoManager, juce::Identifier (licenseManager.getPluginID()), createParameterLayout())
 #endif
 {
     // Set up preset directory
@@ -30,15 +30,15 @@ PocketsynthAudioProcessor::PocketsynthAudioProcessor()
 
     // Add listeners
 	licenseManager.addListener(this);
-	treeState.state.addListener(this);
 
-	// Set up ValueTreeState
-    treeState.state = juce::ValueTree(licenseManager.getPluginID() + "State");
-
-	// Add listeners to ValueTreeState parameters
-	//treeState.addParameterListener("gain", this);
-	//treeState.addParameterListener("voices", this);
-	//treeState.addParameterListener("osc1_waveform", this);
+    // Add listeners to all parameters
+    for (auto p : getParameters())
+    {
+        if (auto* paramWithID = dynamic_cast<juce::AudioProcessorParameterWithID*>(p))
+        {
+			treeState.addParameterListener(paramWithID->paramID, this);
+        }
+    }
 
     setupSynth();
 }
@@ -48,17 +48,20 @@ PocketsynthAudioProcessor::~PocketsynthAudioProcessor()
 	// Remove listeners
 	licenseManager.removeListener(this);
 
-	// Remove listeners from ValueTreeState parameters
-	//treeState.removeParameterListener("gain", this);
-	//treeState.removeParameterListener("voices", this);
-	//treeState.removeParameterListener("osc1_waveform", this);
+    for (auto p : getParameters())
+    {
+        if (auto* paramWithID = dynamic_cast<juce::AudioProcessorParameterWithID*>(p))
+        {
+            treeState.removeParameterListener(paramWithID->paramID, this);
+        }
+    }
 }
 
 void PocketsynthAudioProcessor::setupSynth()
 {
 	int voices = static_cast<int>(*treeState.getRawParameterValue("voices"));
 
-	synth.clearVoices();
+	//synth.clearVoices();
 
 	for (int i = 0; i < voices; i++)
 		synth.addVoice(new OscillatorVoice());
@@ -323,6 +326,15 @@ void PocketsynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 	synth.setCurrentPlaybackSampleRate(sampleRate);
+
+    // Prepare each voice
+    for (int i = 0; i < synth.getNumVoices(); i++)
+    {
+		if (auto* voice = dynamic_cast<OscillatorVoice*>(synth.getVoice(i)))
+		{
+			voice->prepareToPlay(sampleRate, samplesPerBlock);
+		}
+    }
 }
 
 void PocketsynthAudioProcessor::releaseResources()
@@ -373,7 +385,7 @@ void PocketsynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
         buffer.clear (i, 0, buffer.getNumSamples());
 
 	midiKeyboardState.processNextMidiBuffer(midiMessages, 0, buffer.getNumSamples(), true);
-	//synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+	synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 
     // This is the place where you'd normally do the guts of your plugin's
     // audio processing...

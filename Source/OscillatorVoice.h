@@ -31,16 +31,21 @@ public:
 	void startNote(int midiNoteNumber, float velocity, juce::SynthesiserSound*, int /*currentPitchWheelPosition*/) override
 	{
 		level = velocity * 0.15;
-		tailOff = 0.0;
 
 		double baseFrequency = juce::MidiMessage::getMidiNoteInHertz(midiNoteNumber);
 
 		for (auto& osc : oscillators)
+		{
 			osc.setFrequency(baseFrequency, getSampleRate());
+			osc.setActive(true);
+		}
 	}
 
 	void renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
 	{
+		if (!isVoiceActive()) // Do not process if the voice is not active
+			return;
+
 		if (oscillators[0].getNextSample() == 0.0f && oscillators[1].getNextSample() == 0.0f)
 			return;
 
@@ -60,10 +65,7 @@ public:
 
 	void stopNote(float /*velocity*/, bool allowTailOff) override
 	{
-		if (!allowTailOff)
-		{
-			clearCurrentNote();
-		}
+		clearCurrentNote();
 	}
 
 	void pitchWheelMoved(int /*newValue*/) override {}
@@ -84,5 +86,5 @@ public:
 
 private:
 	std::array<Oscillator, 2> oscillators;
-	double level = 0.0, tailOff = 0.0;
+	double level = 0.0;
 };

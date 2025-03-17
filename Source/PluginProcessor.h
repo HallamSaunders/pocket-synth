@@ -17,7 +17,6 @@
 /**
 */
 class PocketsynthAudioProcessor  : public juce::AudioProcessor,
-                                   public juce::ValueTree::Listener,
 	                               public LicenseManager::Listener,
 	                               public juce::ChangeBroadcaster,
 	                               public juce::AudioProcessorValueTreeState::Listener
