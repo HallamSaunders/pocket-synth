@@ -21,7 +21,7 @@ PocketsynthAudioProcessor::PocketsynthAudioProcessor()
                      #endif
                        ),
     undoManager(),
-    treeState(*this, &undoManager, "PARAMETERS", createParameterLayout())
+    treeState(*this, &undoManager, juce::Identifier (licenseManager.getPluginID()), createParameterLayout())
 #endif
 {
     // Set up preset directory
@@ -30,15 +30,15 @@ PocketsynthAudioProcessor::PocketsynthAudioProcessor()
 
     // Add listeners
 	licenseManager.addListener(this);
-	treeState.state.addListener(this);
 
-	// Set up ValueTreeState
-    treeState.state = juce::ValueTree(licenseManager.getPluginID() + "State");
-
-	// Add listeners to ValueTreeState parameters
-	treeState.addParameterListener("gain", this);
-	treeState.addParameterListener("voices", this);
-	treeState.addParameterListener("osc1waveform", this);
+    // Add listeners to all parameters
+    for (auto p : getParameters())
+    {
+        if (auto* paramWithID = dynamic_cast<juce::AudioProcessorParameterWithID*>(p))
+        {
+			treeState.addParameterListener(paramWithID->paramID, this);
+        }
+    }
 
     setupSynth();
 }
@@ -48,10 +48,13 @@ PocketsynthAudioProcessor::~PocketsynthAudioProcessor()
 	// Remove listeners
 	licenseManager.removeListener(this);
 
-	// Remove listeners from ValueTreeState parameters
-	treeState.removeParameterListener("gain", this);
-	treeState.removeParameterListener("voices", this);
-	treeState.removeParameterListener("osc1waveform", this);
+    for (auto p : getParameters())
+    {
+        if (auto* paramWithID = dynamic_cast<juce::AudioProcessorParameterWithID*>(p))
+        {
+            treeState.removeParameterListener(paramWithID->paramID, this);
+        }
+    }
 }
 
 void PocketsynthAudioProcessor::setupSynth()
@@ -72,9 +75,43 @@ juce::AudioProcessorValueTreeState::ParameterLayout PocketsynthAudioProcessor::c
 {
 	juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
+	// Global parameters
 	layout.add(std::make_unique<juce::AudioParameterFloat>("gain", "Gain", juce::NormalisableRange<float>(0.0f, 1.0f), initialGain));
 	layout.add(std::make_unique<juce::AudioParameterInt>("voices", "Voices", 1, 16, 4));
-	layout.add(std::make_unique<juce::AudioParameterChoice>("osc1waveform", "Osc 1 Waveform", juce::StringArray{ "Sine", "Square", "Saw", "Triangle", "Noise"}, 0));
+
+    // Oscillator 1 parameters
+	layout.add(std::make_unique<juce::AudioParameterBool>("osc1_active", "Osc 1 Active", true));
+	layout.add(std::make_unique<juce::AudioParameterChoice>("osc1_waveform", "Osc 1 Waveform", juce::StringArray{ "Sine", "Square", "Saw", "Triangle", "Noise"}, 0));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc1_octave", "Osc 1 Octave", -3, 3, 0));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc1_semitone", "Osc 1 Semitone", -11, 11, 0));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc1_fine", "Osc 1 Fine", -100, 100, 0));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_attack", "Osc 1 Attack", juce::NormalisableRange<float>(0.001f, 5.0f, 0.001f, 0.5f), 0.5f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_decay", "Osc 1 Decay", juce::NormalisableRange<float>(0.001f, 5.0f, 0.001f, 0.5f), 1.0f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_sustain", "Osc 1 Sustain", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 1.0f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_release", "Osc 1 Release", juce::NormalisableRange<float>(0.001f, 5.0f, 0.001f, 0.5f), 0.1f));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc1_voices", "Osc 1 Voices", 1, 16, 1));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc1_voicesDetune", "Osc 1 Voices Detune", -100, 100, 0));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_voicesMix", "Osc 1 Voices Mix", juce::NormalisableRange<float>(0.0f, 1.0f), 0.5f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_voicesPan", "Osc 1 Voices Pan", juce::NormalisableRange<float>(-1.0f, 1.0f), 0.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_level", "Osc 1 Level", juce::NormalisableRange<float>(0.0f, 1.0f), 0.6f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("osc1_pan", "Osc 1 Pan", juce::NormalisableRange<float>(-1.0f, 1.0f), 0.0f));
+
+    // Oscillator 2 parameters
+    layout.add(std::make_unique<juce::AudioParameterBool>("osc2_active", "Osc 2 Active", true));
+	layout.add(std::make_unique<juce::AudioParameterChoice>("osc2_waveform", "Osc 2 Waveform", juce::StringArray{ "Sine", "Square", "Saw", "Triangle", "Noise" }, 0));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc2_octave", "Osc 2 Octave", -3, 3, 0));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc2_semitone", "Osc 2 Semitone", -11, 11, 0));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc2_fine", "Osc 2 Fine", -100, 100, 0));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_attack", "Osc 2 Attack", juce::NormalisableRange<float>(0.001f, 5.0f, 0.001f, 0.5f), 0.5f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_decay", "Osc 2 Decay", juce::NormalisableRange<float>(0.001f, 5.0f, 0.001f, 0.5f), 1.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_sustain", "Osc 2 Sustain", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 1.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_release", "Osc 2 Release", juce::NormalisableRange<float>(0.001f, 5.0f, 0.001f, 0.5f), 0.1f));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc2_voices", "Osc 2 Voices", 1, 16, 1));
+	layout.add(std::make_unique<juce::AudioParameterInt>("osc2_voicesDetune", "Osc 2 Voices Detune", -100, 100, 0));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_voicesMix", "Osc 2 Voices Mix", juce::NormalisableRange<float>(0.0f, 1.0f), 0.5f));
+	layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_voicesPan", "Osc 2 Voices Pan", juce::NormalisableRange<float>(-1.0f, 1.0f), 0.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_level", "Osc 2 Level", juce::NormalisableRange<float>(0.0f, 1.0f), 0.6f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>("osc2_pan", "Osc 2 Pan", juce::NormalisableRange<float>(-1.0f, 1.0f), 0.0f));
 
 	return layout;
 }
@@ -82,8 +119,6 @@ juce::AudioProcessorValueTreeState::ParameterLayout PocketsynthAudioProcessor::c
 // Listen for changes on the ValueTreeState
 void PocketsynthAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
-	juce::Logger::outputDebugString("Changed parameter: " + parameterID + " new value: " + (juce::String)newValue);
-
 	if (parameterID == "gain")
 	{
 		// Set the gain of the synth
@@ -101,7 +136,7 @@ void PocketsynthAudioProcessor::parameterChanged(const juce::String& parameterID
 		{
 			if (auto* voice = dynamic_cast<OscillatorVoice*>(synth.getVoice(i)))
 			{
-				voice->setWaveform(newValue);
+				//voice->setWaveform(newValue);
 			}
 		}
     }
@@ -289,6 +324,16 @@ void PocketsynthAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 	synth.setCurrentPlaybackSampleRate(sampleRate);
+
+    // Prepare each voice
+    for (int i = 0; i < synth.getNumVoices(); i++)
+    {
+		if (auto* voice = dynamic_cast<OscillatorVoice*>(synth.getVoice(i)))
+		{
+			voice->prepareToPlay(sampleRate, samplesPerBlock);
+			voice->setParameters(treeState);
+		}
+    }
 }
 
 void PocketsynthAudioProcessor::releaseResources()
@@ -355,7 +400,7 @@ void PocketsynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
 		for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
 		{
-			channelData[sample] *= gainModifier;
+			channelData[sample] *= std::pow(gainModifier, 2); //Apply exponential gain curve to mimic human hearing
 		}
     }
 }

@@ -17,7 +17,6 @@
 /**
 */
 class PocketsynthAudioProcessor  : public juce::AudioProcessor,
-                                   public juce::ValueTree::Listener,
 	                               public LicenseManager::Listener,
 	                               public juce::ChangeBroadcaster,
 	                               public juce::AudioProcessorValueTreeState::Listener
@@ -95,7 +94,6 @@ private:
     juce::AudioProcessorValueTreeState treeState;
     juce::UndoManager undoManager;
 	juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
-    //void valueTreePropertyChanged(juce::ValueTree& tree, const juce::Identifier& property) override;
 	void parameterChanged(const juce::String& parameterID, float newValue) override;
 
     // Midi management
