@@ -6,6 +6,10 @@
   <MAINGROUP id="e9OuBz" name="pocket-synth">
     <GROUP id="{E1001ED0-77CA-5863-C654-B41B7E694DDA}" name="Source">
       <GROUP id="{E4304BE2-55E9-CBF4-730E-2069324FE921}" name="VisualComponents">
+        <GROUP id="{D5BB2072-8525-4C2E-2CBB-4AFC0B6C8FF7}" name="SubComponents">
+          <FILE id="CwGzuT" name="ADSRDisplay.h" compile="0" resource="0" file="Source/ADSRDisplay.h"/>
+          <FILE id="fR1dTH" name="VoicesDisplay.h" compile="0" resource="0" file="Source/VoicesDisplay.h"/>
+        </GROUP>
         <FILE id="R8TD9p" name="GlobalControlsComponent.cpp" compile="1" resource="0"
               file="Source/GlobalControlsComponent.cpp"/>
         <FILE id="JKFAga" name="GlobalControlsComponent.h" compile="0" resource="0"

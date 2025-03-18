@@ -13,6 +13,7 @@
 #include <JuceHeader.h>
 #include "CustomLookAndFeel.h"
 #include "Spacing.h"
+#include "ADSRDisplay.h"
 
 class OscillatorComponent : public juce::Component
 {
@@ -26,9 +27,11 @@ private:
 	CustomLookAndFeel customLookAndFeel;
 	Spacing spacing;
 
-	// Components
+	// Display components
 	juce::Label name_label;
+	ADSRDisplay adsrDisplay;
 
+	// Interactive components
 	std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> active_toggleButtonAttachment;
 	juce::ToggleButton active_toggleButton;
 

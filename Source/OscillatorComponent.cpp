@@ -10,7 +10,7 @@
 
 #include "OscillatorComponent.h"
 
-OscillatorComponent::OscillatorComponent(juce::AudioProcessorValueTreeState& apvts, const juce::String& osc_name, const juce::String& oscId) : valueTreeState(apvts)
+OscillatorComponent::OscillatorComponent(juce::AudioProcessorValueTreeState& apvts, const juce::String& osc_name, const juce::String& oscId) : valueTreeState(apvts), adsrDisplay(apvts, oscId)
 {
 	setLookAndFeel(&customLookAndFeel);
 
@@ -18,6 +18,9 @@ OscillatorComponent::OscillatorComponent(juce::AudioProcessorValueTreeState& apv
 	name_label.setText(osc_name, juce::dontSendNotification);
 	name_label.setJustificationType(juce::Justification::left);
 	addAndMakeVisible(name_label);
+
+	// ADSR display
+	addAndMakeVisible(adsrDisplay);
 
 	// Active toggle button
 	active_toggleButtonAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(
@@ -212,6 +215,7 @@ void OscillatorComponent::resized()
 		juce::GridItem(fine_label)				.withArea(10, 5, 10, 7),
 
 		// Envelope sliders and labels
+		juce::GridItem(adsrDisplay)				.withArea(2, 7, 8, 15),
 		juce::GridItem(attack_slider)			.withArea(8, 7, 10, 9),
 		juce::GridItem(attack_label)			.withArea(10, 7, 10, 9),
 		juce::GridItem(decay_slider)			.withArea(8, 9, 10, 11),

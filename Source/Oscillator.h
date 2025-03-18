@@ -15,11 +15,6 @@
 class Oscillator
 {
 public:
-	Oscillator()
-	{
-		setWaveform("Sine");
-	}
-
     void setWaveform(const juce::String& waveformType)
     {
 		if (waveformType == "Sine")
@@ -34,6 +29,8 @@ public:
 			osc.initialise([](float x) { return 2.0f * juce::Random::getSystemRandom().nextFloat() - 1.0f; }, 128);
 		else
 			osc.initialise([](float x) { return std::sin(x); }, 128);
+
+		osc.reset();
     }
 
 	void setFrequency(float frequency, double sampleRate)
