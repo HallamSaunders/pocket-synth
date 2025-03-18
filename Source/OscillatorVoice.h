@@ -65,8 +65,6 @@ public:
 				
 			currentSample *= 1.0f / std::sqrt(static_cast<float>(numActiveOscillators)); // Normalise the output according to power summation principle
 
-			
-
 			for (int i = outputBuffer.getNumChannels(); --i >= 0;)
 				outputBuffer.addSample(i, startSample, currentSample);
 
@@ -95,7 +93,19 @@ public:
 			osc.prepare(spec);
 	}
 
+	// Oscillator control helper functions
+	void setActive(int oscIndex, bool shouldBeActive)
+	{
+		if (oscIndex >= 0 && oscIndex < oscillators.size())
+			oscillators[oscIndex].setActive(shouldBeActive);
+	}
+
+	void setWaveform(int oscIndex, const juce::String& waveformType)
+	{
+		if (oscIndex >= 0 && oscIndex < oscillators.size())
+			oscillators[oscIndex].setWaveform(waveformType);
+	}
+
 private:
 	std::array<Oscillator, 2> oscillators;
-	double level = 0.0;
 };

@@ -401,7 +401,7 @@ void PocketsynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
 		for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
 		{
-			channelData[sample] *= gainModifier;
+			channelData[sample] *= std::pow(gainModifier, 2); //Apply exponential gain curve to mimic human hearing
 		}
     }
 }
