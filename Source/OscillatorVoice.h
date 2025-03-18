@@ -52,9 +52,20 @@ public:
 		while (--numSamples >= 0)
 		{
 			float currentSample = 0.0f;
+			int numActiveOscillators = 0;
 
 			for (auto& osc : oscillators)
+			{
 				currentSample += osc.getNextSample();
+				if (osc.isActive())
+					++numActiveOscillators;
+			}
+
+			//juce::Logger::outputDebugString("Active Oscillators: " + juce::String(numActiveOscillators) + "\n");
+				
+			currentSample *= 1.0f / std::sqrt(static_cast<float>(numActiveOscillators)); // Normalise the output according to power summation principle
+
+			
 
 			for (int i = outputBuffer.getNumChannels(); --i >= 0;)
 				outputBuffer.addSample(i, startSample, currentSample);
