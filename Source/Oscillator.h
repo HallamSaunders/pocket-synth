@@ -45,12 +45,17 @@ public:
 
 	float getNextSample()
 	{
-		return osc.processSample(0.0f);
+		return osc.processSample(0.0f) * volume;
 	}
 
 	void reset()
 	{
 		osc.reset();
+	}
+
+	void setVolume(float newVolume)
+	{
+		volume = newVolume;
 	}
 
 	void setActive(bool shouldBeActive)
@@ -64,5 +69,6 @@ public:
 	}
 private:
 	juce::dsp::Oscillator<float> osc;
+	float volume = 1.0f;
 	bool active;
 };
