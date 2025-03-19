@@ -25,7 +25,8 @@
 /**
 */
 class PocketsynthAudioProcessorEditor  : public juce::AudioProcessorEditor,
-	                                     public juce::ChangeListener
+	                                     public juce::ChangeListener,
+										 public juce::Timer
 {
 public:
     PocketsynthAudioProcessorEditor (PocketsynthAudioProcessor&);
@@ -39,6 +40,11 @@ private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     PocketsynthAudioProcessor& audioProcessor;
+	CustomLookAndFeel customLookAndFeel;
+	Spacing spacing;
+	
+	// Timer callback
+	void timerCallback() override;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PocketsynthAudioProcessorEditor)
 
@@ -46,9 +52,7 @@ private:
 	bool keyPressed(const juce::KeyPress& key) override;
 	void changeListenerCallback(juce::ChangeBroadcaster* source) override;
 
-	// Custom LookAndFeel and Spacing
-    CustomLookAndFeel customLookAndFeel;
-    Spacing spacing;
+
 
     // Licensing components
 	juce::TextButton launchLicenseActivationWindow_button;

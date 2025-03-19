@@ -396,12 +396,18 @@ void PocketsynthAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
 
     for (int channel = 0; channel < totalNumOutputChannels; ++channel)
     {
-        auto* channelData = buffer.getWritePointer (channel);
+        auto* channelData = buffer.getWritePointer(channel);
 
-		for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-		{
-			channelData[sample] *= std::pow(gainModifier, 2); //Apply exponential gain curve to mimic human hearing
-		}
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        {
+            channelData[sample] *= std::pow(gainModifier, 2); //Apply exponential gain curve to mimic human hearing
+        }
+
+        // Update output levels
+		float peak = juce::FloatVectorOperations::findMaximum(channelData, buffer.getNumSamples());
+
+		if (channel == 0) leftLevel.store(juce::Decibels::gainToDecibels(peak + 0.0001f)); // avoid -inf
+		if (channel == 1) rightLevel.store(juce::Decibels::gainToDecibels(peak + 0.0001f)); // avoid -inf
     }
 }
 

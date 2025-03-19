@@ -11,20 +11,28 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "PluginProcessor.h"
+#include "LevelMeter.h"
 #include "CustomLookAndFeel.h"
 #include "Spacing.h"
 
-class GlobalControlsComponent : public juce::Component
+class GlobalControlsComponent : public juce::Component,
+								public juce::Timer
 {
 public:
-	GlobalControlsComponent(juce::AudioProcessorValueTreeState& apvts);
+	GlobalControlsComponent(PocketsynthAudioProcessor& p);
 	~GlobalControlsComponent() override;
 
 	void resized() override;
 private:
-	juce::AudioProcessorValueTreeState& valueTreeState;
+	PocketsynthAudioProcessor& processor;
 	CustomLookAndFeel customLookAndFeel;
 	Spacing spacing;
+
+	void timerCallback() override;
+
+	LevelMeter leftMeter;
+	LevelMeter rightMeter;
 
 	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> gain_sliderAttachment;
 	juce::Label gain_label;

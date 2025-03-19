@@ -18,7 +18,7 @@ PocketsynthAudioProcessorEditor::PocketsynthAudioProcessorEditor (PocketsynthAud
 	presetBar_component(p),
 	osc1_component(p.getTreeState(), "Oscillator 1", "osc1"),
 	osc2_component(p.getTreeState(), "Oscillator 2", "osc2"),
-	globalControls_component(p.getTreeState())
+	globalControls_component(p)
 {
 	//========== SET UP EDITOR ==========
 	// Setup editor and fix aspect ratio
@@ -72,6 +72,9 @@ PocketsynthAudioProcessorEditor::PocketsynthAudioProcessorEditor (PocketsynthAud
 
 	// Global controls
 	addAndMakeVisible(globalControls_component);
+
+	// Start the timer
+	startTimerHz(30);
 
 
 
@@ -135,6 +138,11 @@ PocketsynthAudioProcessorEditor::~PocketsynthAudioProcessorEditor()
 {
 	setLookAndFeel(nullptr);
 	audioProcessor.removeChangeListener(this);
+}
+
+void PocketsynthAudioProcessorEditor::timerCallback()
+{
+	
 }
 
 void PocketsynthAudioProcessorEditor::updatePresetList()

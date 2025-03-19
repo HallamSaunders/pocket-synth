@@ -121,9 +121,10 @@ juce::Grid Spacing::getGlobalControlsGridLayout()
 {
 	juce::Grid grid;
 
-	// Create a 2x12 grid with padding
+	// Create a 3x12 grid with padding
 	juce::Array<juce::Grid::TrackInfo> row_tracks;
-	row_tracks.add(juce::Grid::Fr(2));
+	row_tracks.add(juce::Grid::Fr(1));
+	row_tracks.add(juce::Grid::Fr(1));
 	row_tracks.add(juce::Grid::Fr(1));
 	grid.templateRows = row_tracks;
 

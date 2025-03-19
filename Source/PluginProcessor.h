@@ -82,6 +82,10 @@ public:
 	// Midi management
 	juce::MidiKeyboardState& getMidiKeyboardState() { return midiKeyboardState; }
 
+	// Levels and FFT
+	std::atomic<float> leftLevel = 0.0f;
+	std::atomic<float> rightLevel = 0.0f;
+    
 private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PocketsynthAudioProcessor)
@@ -102,5 +106,4 @@ private:
 	// Synthesiser components
 	void setupSynth();
     juce::Synthesiser synth;
-
 };
