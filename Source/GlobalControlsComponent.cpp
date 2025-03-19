@@ -10,7 +10,7 @@
 
 #include "GlobalControlsComponent.h"
 
-GlobalControlsComponent::GlobalControlsComponent(PocketsynthAudioProcessor& p) : processor(p), leftMeter(p.leftLevel), rightMeter(p.rightLevel)
+GlobalControlsComponent::GlobalControlsComponent(PocketsynthAudioProcessor& p) : processor(p), meterLeft(p.leftLevel), meterRight(p.rightLevel)
 
 {
 	setLookAndFeel(&customLookAndFeel);
@@ -22,8 +22,16 @@ GlobalControlsComponent::GlobalControlsComponent(PocketsynthAudioProcessor& p) :
 		slider->setPopupDisplayEnabled(true, true, this);
 	}
 
-	addAndMakeVisible(leftMeter);
-	addAndMakeVisible(rightMeter);
+	addAndMakeVisible(meterLeft);
+	addAndMakeVisible(meterRight);
+	left_label.setText("Left", juce::dontSendNotification);
+	left_label.attachToComponent(&meterLeft, false);
+	left_label.setJustificationType(juce::Justification::centred);
+	addAndMakeVisible(left_label);
+	right_label.setText("Right", juce::dontSendNotification);
+	right_label.attachToComponent(&meterRight, false);
+	right_label.setJustificationType(juce::Justification::centred);
+	addAndMakeVisible(right_label);
 
 	gain_sliderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processor.getTreeState(), "gain", gain_slider);
 	addAndMakeVisible(gain_slider);
@@ -57,12 +65,14 @@ void GlobalControlsComponent::resized()
 	juce::Grid grid = spacing.getGlobalControlsGridLayout();
 
 	grid.items = {
-		juce::GridItem(leftMeter)			.withArea(1, 12, 3, 13),
-		juce::GridItem(rightMeter)			.withArea(1, 13, 3, 14),
-		juce::GridItem(gain_slider)			.withArea(1, 11, 3, 12),
-		juce::GridItem(gain_label)			.withArea(3, 11, 3, 12),
-		juce::GridItem(voices_slider)		.withArea(1, 10, 3, 11),
-		juce::GridItem(voices_label)		.withArea(3, 10, 3, 11)
+		juce::GridItem(meterLeft)			.withArea(1, 23, 3, 24),
+		juce::GridItem(meterRight)			.withArea(1, 24, 3, 25),
+		juce::GridItem(left_label)			.withArea(3, 23, 3, 24),
+		juce::GridItem(right_label)			.withArea(3, 24, 3, 25),
+		juce::GridItem(gain_slider)			.withArea(1, 21, 3, 23),
+		juce::GridItem(gain_label)			.withArea(3, 21, 3, 23),
+		juce::GridItem(voices_slider)		.withArea(1, 19, 3, 21),
+		juce::GridItem(voices_label)		.withArea(3, 19, 3, 21)
 	};
 
 	grid.performLayout(getLocalBounds());

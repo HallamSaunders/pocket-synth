@@ -11,28 +11,39 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "CustomLookAndFeel.h"
+#include "Spacing.h"
 
 class LevelMeter : public juce::Component, public juce::Timer
 {
 public:
-    LevelMeter(std::atomic<float>& levelRef) : level(levelRef)
+	LevelMeter(std::atomic<float>& lev) : level(lev)
     {
+		setLookAndFeel(&customLookAndFeel);
 		startTimerHz(30);
 	}
 
-    void paint(juce::Graphics& g) override
-    {
-        auto bounds = getLocalBounds().toFloat();
-        g.setColour(juce::Colours::black);
-        g.fillRect(bounds);
+	~LevelMeter() override
+	{
+		setLookAndFeel(nullptr);
+	}
 
-        float meterHeight = juce::jmap(level.load(), -60.0f, 0.0f, 0.0f, bounds.getHeight());
-        g.setColour(juce::Colours::green);
-        g.fillRect(bounds.removeFromBottom(meterHeight));
-    }
+	void paint(juce::Graphics& g) override
+	{
+		auto bounds = getLocalBounds().toFloat();
+
+		float meterHeight = juce::jmap(level.load(), -60.0f, 0.0f, 0.0f, bounds.getHeight());
+		juce::Rectangle<float> meter(bounds.getX(), bounds.getY() + (bounds.getHeight() - meterHeight), bounds.getWidth(), meterHeight);
+
+		g.setColour(customLookAndFeel.getColourFromID("foreground"));
+		g.fillRect(meter);
+	}
 
 private:
-	std::atomic<float>& level;
+	CustomLookAndFeel customLookAndFeel;
+	Spacing spacing;
+
+    std::atomic<float>& level;
 
 	void timerCallback() override
 	{

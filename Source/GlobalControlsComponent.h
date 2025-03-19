@@ -31,8 +31,10 @@ private:
 
 	void timerCallback() override;
 
-	LevelMeter leftMeter;
-	LevelMeter rightMeter;
+	LevelMeter meterLeft;
+	LevelMeter meterRight;
+	juce::Label left_label;
+	juce::Label right_label;
 
 	std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> gain_sliderAttachment;
 	juce::Label gain_label;
