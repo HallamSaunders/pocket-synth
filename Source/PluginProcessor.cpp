@@ -121,13 +121,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout PocketsynthAudioProcessor::c
 // Listen for changes on the ValueTreeState
 void PocketsynthAudioProcessor::parameterChanged(const juce::String& parameterID, float newValue)
 {
-	for (int i = 0; i < synth.getNumVoices(); i++)
+	/*for (int i = 0; i < synth.getNumVoices(); i++)
 	{
 		if (auto* voice = dynamic_cast<OscillatorVoice*>(synth.getVoice(i)))
 		{
 			voice->parametersNeedUpdating.store(true);
 		}
-	}
+	}*/
 
 	/*if (parameterID == "gain")
 	{
