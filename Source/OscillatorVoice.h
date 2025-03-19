@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-    OscillatorVoice.h
-    Created: 16 Mar 2025 7:00:49pm
-    Author:  Hallam Saunders
+	OscillatorVoice.h
+	Created: 16 Mar 2025 7:00:49pm
+	Author:  Hallam Saunders
 
   ==============================================================================
 */

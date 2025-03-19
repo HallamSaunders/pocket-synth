@@ -1,9 +1,9 @@
 /*
   ==============================================================================
 
-    Oscillator.h
-    Created: 17 Mar 2025 1:33:25pm
-    Author:  Hallam
+	Oscillator.h
+	Created: 17 Mar 2025 1:33:25pm
+	Author:  Hallam
 
   ==============================================================================
 */
@@ -15,8 +15,8 @@
 class Oscillator
 {
 public:
-    void setWaveform(const juce::String& waveformType)
-    {
+	void setWaveform(const juce::String& waveformType)
+	{
 		if (waveformType == "Sine")
 			osc.initialise([](float x) { return std::sin(x); }, 128);
 		else if (waveformType == "Square")
@@ -31,7 +31,7 @@ public:
 			osc.initialise([](float x) { return std::sin(x); }, 128);
 
 		osc.reset();
-    }
+	}
 
 	void setFrequency(float frequency, double sampleRate)
 	{

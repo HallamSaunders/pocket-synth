@@ -30,6 +30,8 @@
       </GROUP>
       <GROUP id="{E3583C2C-9BC0-4BB3-1A5F-93E35DEF2A65}" name="Synthesiser">
         <FILE id="DJrh9E" name="Oscillator.h" compile="0" resource="0" file="Source/Oscillator.h"/>
+        <FILE id="NS2gb5" name="OscillatorDetune.h" compile="0" resource="0"
+              file="Source/OscillatorDetune.h"/>
         <FILE id="EJAhDF" name="OscillatorSound.h" compile="0" resource="0"
               file="Source/OscillatorSound.h"/>
         <FILE id="k65edM" name="OscillatorVoice.h" compile="0" resource="0"
